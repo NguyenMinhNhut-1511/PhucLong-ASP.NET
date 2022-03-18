@@ -1,0 +1,176 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title</title>
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script src="https://kit.fontawesome.com/a5d7a089f5.js" crossorigin="anonymous"></script>
+
+    <link rel='stylesheet' id='common_order_css-css' href='~/Content/common-order.css' type='text/css' media='all' />
+    <link rel='stylesheet' id='common_css-css' href='~/Content/common.css' type='text/css' media='all' />
+    <link rel='stylesheet' id='control_css-css' href='~/Content/control.css' type='text/css' media='all' />
+    <link rel='stylesheet' id='bootstrap_css-css' href='~/Content/bootstrapv4.css' type='text/css' media='all' />
+    <link rel='stylesheet' id='order_css-css' href='~/Content/OrderStyle.css' type='text/css' media='all' />
+    <meta name="generator" content="Site Kit by Google 1.30.0" />
+    <link rel="icon" href="~/images/logo_200x200.png" sizes="32x32" />
+    <link rel="icon" href="~/images/logo_200x200.png" sizes="192x192" />
+    <link rel="apple-touch-icon" href="~/images/logo_200x200.png" />
+    <meta name="msapplication-TileImage" content="~/images/logo_200x200.png" />
+</head>
+
+<body data-rsssl=1>
+    <div class="order-header">
+        <a class="logo" href="@Url.Action("Index", "Order")">
+            <img src="~/images/logo_200x200_w.png" style="width: 50px;" alt="">
+        </a>
+        <div class="btn-back">
+            <i class="fas fa-arrow-left"></i>
+        </div>
+        <div class="right">
+            @if (Session["Email"] != null)
+            {
+                <div class="user-info">
+                    <ul style="list-style-type: none">
+                        <li class="FullName"><a href="@Url.Action("UpdateInfo", "Accounts")"><i class="fa fa-user-circle"></i> @Session["Name"]</a></li>
+                        <li class="Logout"><a href="@Url.Action("Logout", "Accounts")"><i class="fa fa-sign-out"></i></a></li>
+                    </ul>
+                </div>
+            }
+            else
+            {
+                <a class="login-button" href="@Url.Action("Login", "Accounts")">Đăng nhập</a>
+            }
+        </div>
+    </div>
+    @RenderBody()
+    <!--MODAL-->
+    <div class="modal fade" id="ItemModal" tabindex="-1" aria-labelledby="exampleModalLabel" style="display: none;" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="nameSP"></h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="InfoItem">
+                    <div class="ss-1 product-infomation">
+                        <div class="ss-1-left">
+                            <img id="pp-product-img" src="https://tocotocotea.com/wp-content/uploads/2021/01/ezgif.com-gif-maker-14.jpg" alt="">
+                        </div>
+                        <div class="ss-1-right">
+                            <div id="pp-product-name" class="product-name" data-id="0" data-price="0"></div>
+                            <div class="product-price">
+                            </div>
+                            <br />
+                            <div class="wrap-quantity d-flex align-items-center">
+                                <div class="change-quantity-wrap">
+                                    <div class="change-quantity decrease">-</div>
+                                    <div class="amount">1</div>
+                                    <div class="change-quantity increase">+</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!---->
+
+                    <div class="ss-2 product-customize">
+                        <div class="customize-section type">
+                            <div class="customize-title">
+                                <div class="left">Chọn loại</div>
+                                <div class="right">
+                                    <i class="fas fa-angle-down" aria-hidden="true"></i>
+                                </div>
+                            </div>
+                            <div class="customize-content">
+
+                            </div>
+                        </div>
+                        <div class="customize-section size">
+                            <div class="customize-title">
+                                <div class="left">Chọn size</div>
+                                <div class="right">
+                                    <i class="fas fa-angle-down" aria-hidden="true"></i>
+                                </div>
+                            </div>
+                            <div class="customize-content">
+
+                            </div>
+                        </div>
+                        <div class="customize-section sugar">
+                            <div class="customize-title">
+                                <div class="left">Chọn đường</div>
+                                <div class="right">
+                                    <i class="fas fa-angle-down" aria-hidden="true"></i>
+                                </div>
+                            </div>
+                            <div class="customize-content">
+
+                            </div>
+                        </div>
+                        <div class="customize-section ice">
+                            <div class="customize-title">
+                                <div class="left">Chọn đá</div>
+                                <div class="right">
+                                    <i class="fas fa-angle-down" aria-hidden="true"></i>
+                                </div>
+                            </div>
+                            <div class="customize-content">
+
+                            </div>
+                        </div>
+                        <div class="customize-section topping">
+                            <div class="customize-title">
+                                <div class="left">Chọn topping</div>
+                                <div class="right">
+                                    <i class="fas fa-angle-down" aria-hidden="true"></i>
+                                </div>
+                            </div>
+                            <div class="customize-content">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-danger" type="button" data-dismiss="modal">Hủy bỏ</button>
+                    <!--<a class="btn btn-primary" id="ButtonLogout" href="#">Thêm vào giỏ</a>-->
+                    <button class="btn btn-primary" id="ThemGioHang" type="button" data-dismiss="modal">Thêm vào giỏ</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--THONG BAO-->
+    <div style="position: absolute; top: 4rem; right: 1rem;" aria-live="polite" aria-atomic="true">
+        <div position: relative;>
+            <div class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-delay="2000">
+                <div class="toast-header">
+                    <strong class="mr-auto">Thông Báo</strong>
+                    <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="toast-body"></div>
+            </div>
+        </div>
+    </div>
+    <script src="~/Scripts/jquery-3.3.1.js"></script>
+    <!-- GIO HANG -->
+    <!-- Bootstrap core JavaScript-->
+    <script src="~/vendor/jquery/jquery.min.js"></script>
+    <script src="~/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+    <script src="~/Scripts/order.js"></script>
+    <!-- Core plugin JavaScript-->
+    <script src="~/vendor/jquery-easing/jquery.easing.min.js"></script>
+
+    <!-- Custom scripts for all pages-->
+    <script src="~/Scripts/sb-admin-2.js"></script>
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

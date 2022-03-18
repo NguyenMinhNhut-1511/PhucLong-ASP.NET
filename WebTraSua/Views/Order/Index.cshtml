@@ -1,0 +1,118 @@
+﻿
+@model IEnumerable<WebTraSua.Models.SanPham>
+
+@{
+    ViewBag.Title = "Đặt Hàng 4 Anh Em";
+    Layout = "~/Views/Shared/_LayoutOrder.cshtml";
+}
+
+<div class="page-order">
+    <div class="order-content">
+        @Html.Action("ListLoaiSP", "Order")
+        <div class="order-center">
+            <div class="main-center">
+                @foreach (var item in ViewBag.LoaiSP)
+                {
+                    <div class="category" catslug=@item.maLoai>
+                        <div class="category-name">
+                            <div class="left">@item.tenLoai</div>
+                            <div class="right">
+                                <i class="fas fa-angle-down"></i>
+                            </div>
+                        </div>
+                        <div class="list-product">
+                            @foreach (var itemSP in Model)
+                            {
+                                if (itemSP.maLoai == item.maLoai)
+                                {
+                                    <div class="product" product_id=@itemSP.ID default_variation_id=@itemSP.ID>
+                                        <img src=@itemSP.Anh alt="">
+                                        <div class="product-name">@itemSP.tenSP</div>
+                                        <div class="product-price">
+                                            @{
+                                                if (itemSP.GiamGia == 0)
+                                                {
+                                                    <div class="product-origin-price">@String.Format("{0:0,0}", (int)itemSP.Gia)đ</div>
+                                                }
+                                                else
+                                                {
+                                                    <div class="product-origin-price">@String.Format("{0:0,0}", (int)((int)itemSP.Gia) * (100 - itemSP.GiamGia) / 100)đ</div>
+                                                    <div class="product-sale-price">@String.Format("{0:0,0}", (int)itemSP.Gia)đ</div>
+                                                }
+                                            }
+
+                                        </div>
+                                        <a class="btn-increase" id="DatHang" href="#" data-toggle="modal" data-item='["@itemSP.ID", "@itemSP.tenSP", "@itemSP.Gia", "@itemSP.GiamGia", "@itemSP.ChonLoai","@itemSP.ChonSize","@itemSP.ChonDuong","@itemSP.ChonDa","@itemSP.ChonTopping","@itemSP.Anh","@ViewBag.ListTP.ToString().Replace("\"","'")"]' data-target="#ItemModal" data>+</a>
+                                    </div>
+                                }
+                            }
+
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+        <div class="order-sidebar sidebar-right">
+            <div class="cart-group-top">
+                <div class="cart-title">
+                    <div class="arrow-down">
+                        <i class="fas fa-arrow-down"></i>
+                    </div>
+                    <div class="cart-title-left">
+                        Giỏ hàng của tôi
+                    </div>
+                    <div class="cart-title-right" id="clear-cart">
+                        Xóa tất cả
+                    </div>
+                </div>
+                <div class="cart-ss1">
+                    @Html.Action("LoadGioHang", "GioHang")
+                </div>
+            </div>
+            <div class="cart-group-bottom">
+                <div class="cart-ss2">
+                    <img class="img-toco" src="~/Content/icon-glass-tea.png" alt="">
+                    <span class="cart-ss2-one">x</span>
+                    <span class="cart-ss2-two">0</span>
+                    <span class="cart-ss2-three">=</span>
+                    <span class="cart-ss2-four">0đ</span>
+                </div>
+                <div class="cart-ss3">
+                    <div class="button-cart">Thanh toán</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+        document.querySelector("#clear-cart").addEventListener("click", function (e) {
+            var employee = new Object()
+            employee.reURL = window.location.href
+            $.ajax({
+                type: "POST",
+                url: "/GioHang/XoaTatCa",
+                data: JSON.stringify(employee),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (response) {
+                    location.reload()
+                },
+                error: function (response) {
+                    location.reload()
+                }
+            });
+        })
+        document.querySelector(".button-cart").addEventListener("click", function (e) {
+            var email = "@Session["Email"]"
+                    if (email != null && email != "") {
+                window.location.href = "/GioHang";
+            } else {
+                        document.querySelector('.toast-body').innerText = "🔔 Vui Lòng Đăng Nhập Trước Khi Thanh Toán!!!"
+                $('.toast').toast('show')
+            }
+        })
+
+    </script>
+}

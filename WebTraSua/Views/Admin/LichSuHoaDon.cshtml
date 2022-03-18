@@ -1,0 +1,78 @@
+﻿@model IEnumerable<WebTraSua.Models.HoaDon>
+
+@{
+    ViewBag.Title = "LichSuHoaDon";
+    Layout = "~/Views/Shared/_Layout_Admin.cshtml";
+}
+
+<!-- DataTales Example -->
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary d-inline-block">Lịch Sử Giao Dịch</h6>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered" id="dataTable" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Họ Tên</th>
+                        <th>Địa Chỉ</th>
+                        <th>SĐT</th>
+                        <th>Thời Gian Đặt</th>
+                        <th>Thời Gian Nhận</th>
+                        <th>Phương Thức Thanh Toán</th>
+                        <th>Hành Động</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                    <tr>
+                        <td>@item.ID</td>
+                        <td>@item.HoTen</td>
+                        <td>@item.DiaChi</td>
+                        <td>@item.SDT</td>
+                        <td>@item.ThoiGianDat.GetValueOrDefault().ToString("dd/MM/yyyy HH:mm:ss")</td>
+                        <td>
+                            @{if (item.ThoiGianNhan.GetValueOrDefault().ToString("yyyy") == "0001")
+                                {
+                                    <p>
+                                        Chưa Nhận Hàng
+                                    </p> 
+                                }
+                                else
+                                {
+                                    <p>
+                                        @item.ThoiGianNhan.GetValueOrDefault().ToString("dd/MM/yyyy HH:mm:ss")
+                                    </p>
+                                }
+                            }
+                        </td>
+                        <td>@item.PTThanhToan.tenPT</td>
+                        <td>
+                            <a href="@Url.Action("CTHoaDon","Admin", new { id = item.ID })" class="btn btn-success">Thông Tin</a>
+                        </td>
+                    </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <!-- Custom styles for this page -->
+    <link href="~/vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
+
+    <!-- Page level plugins -->
+    <script src="~/vendor/datatables/jquery.dataTables.js"></script>
+    <script src="~/vendor/datatables/dataTables.bootstrap4.min.js"></script>
+
+    <!-- Page level custom scripts -->
+    <script src="~/Scripts/demo/datatables-demo.js"></script>
+
+    <!-- JS -->
+    <script>
+    </script>
+}

@@ -1,0 +1,764 @@
+﻿@using WebTraSua.Models;
+@model IEnumerable<SanPham>
+
+@{
+    ViewBag.Title = "SanPham";
+    Layout = "~/Views/Shared/_Layout_Admin.cshtml";
+}
+
+<!-- DataTales Example -->
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary d-inline-block">Danh Sách Sản Phẩm</h6>
+        <button onclick="CreateFunc()" data-toggle="modal" data-target="#CustomModal" class="float-right btn btn-primary">Thêm Sản Phẩm</button>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered" id="dataTable" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Tên</th>
+                        <th>Giá</th>
+                        <th>Giảm Giá</th>
+                        <th>Loại Sản Phẩm</th>
+                        <th>Hành Động</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.ID</td>
+                            <td>@item.tenSP</td>
+                            <td>@String.Format("{0:0,0}", item.Gia)đ</td>
+                            <td>@item.GiamGia%</td>
+                            <td>@item.LoaiSanPham.tenLoai</td>
+                            <td>
+                                <button onclick="InfoFunc('@item.ID','@item.tenSP')" data-toggle="modal" data-target="#CustomModal" class="btn btn-success btn-circle"><i class="fas fa-info"></i></button>
+                                <button onclick="EditFunc('@item.ID','@item.tenSP')" data-toggle="modal" data-target="#CustomModal" class="btn btn-primary btn-circle"><i class="fas fa-edit"></i></button>
+                                <button onclick="DeleteFunc('@item.ID','@item.tenSP')" data-toggle="modal" data-target="#CustomModal" class="btn btn-danger btn-circle"><i class="fas fa-trash"></i></button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <!-- Custom styles for this page -->
+    <link href="~/vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
+
+    <!-- Page level plugins -->
+    <script src="~/vendor/datatables/jquery.dataTables.js"></script>
+    <script src="~/vendor/datatables/dataTables.bootstrap4.min.js"></script>
+
+    <!-- Page level custom scripts -->
+    <script src="~/Scripts/demo/datatables-demo.js"></script>
+
+    <!-- JS -->
+    <script>
+        function money(x) {
+            return x.toLocaleString('it-IT', { style: 'currency', currency: 'VND' });
+        }
+
+        function ResetCustomModal() {
+            document.querySelector("#CustomModalLabel").innerHTML = ""
+            document.querySelector("#CustomModalBody").innerHTML = ""
+            document.querySelector("#CustomModalFooter").innerHTML = ""
+        }
+
+        function DeleteFunc(id, name) {
+            ResetCustomModal()
+            if (id != null) {
+                document.querySelector("#CustomModalLabel").innerHTML = "Bạn có thật sự muốn xóa ?"
+                document.querySelector("#CustomModalBody").innerHTML = 'Nhấn "Xác Nhận" để xóa Sản Phẩm <b>' + name + "</b> !"
+                document.querySelector("#CustomModalFooter").innerHTML = `<button class="btn btn-danger" type="button" data-dismiss="modal">Hủy Bỏ</button>
+                                                               <button class="btn btn-success" data-dismiss="modal" onclick="DeleteSP(`+id+`)" href="#">Xác Nhận</button>`
+            }
+        }
+
+        function DeleteSP(id) {
+            $.post("/Admin/BlockSP", { id: id }).done(function () {
+                ResetCustomModal()
+                location.reload()
+            })
+        }
+
+        function InfoFunc(id, name) {
+            ResetCustomModal()
+            if (id != null) {
+                var haha = id
+                document.querySelector("#CustomModalLabel").innerHTML = "Thông Tin Sản Phẩm <b>" + name + "</b>"
+                $.post("/Admin/GetSP", { id: id }).done(function (data) {
+                    var sp = JSON.parse(data)
+                    document.querySelector("#CustomModalBody").innerHTML = `
+                        <label>
+                            <b>Tên:</b> `+ sp[1]+`<br>
+                            <b>Giá:</b> `+ money(parseInt(sp[2])) +`<br>
+                            <b>Giảm Giá:</b> `+ sp[3] +`%<br>
+                            <b>Loại:</b> `+ sp[4] +`<br>
+                            <b>Ảnh:</b> <img src="`+ sp[5] +`" width="100" /><br>
+                            <b>Mô Tả: </b> <textarea style="width: 100%;" readonly>`+ (sp[6] != null ? sp[6] : "") +`</textarea>
+                        </label>`
+                })
+                
+                document.querySelector("#CustomModalFooter").innerHTML = `<button class="btn btn-danger" type="button" data-dismiss="modal">Đóng</button>`
+            }
+        }
+
+        function EditFunc(id, name) {
+            document.querySelector("#CustomModalBody").innerHTML = `
+                    <div class="form-group d-inline-block">
+                        <b class="control-label">Tên Sản Phẩm: </b>
+                        <div class="col-md-10">
+                            <input class="form-control" type="text" id="tenSP">
+                        </div>
+                    </div>
+                    <div class="form-group d-inline-block">
+                        <b class="control-label">Giá Sản Phẩm: </b>
+                        <div class="col-md-10">
+                            <input class="form-control" type="text" id="giaSP">
+                        </div>
+                    </div>
+                    <div class="form-group d-inline-block">
+                        <b class="control-label">Giảm Giá: </b>
+                        <div class="col-md-10">
+                            <input class="form-control" type="text" id="giamgiaSP">
+                        </div>
+                    </div>
+                    <div class="form-group d-inline-block">
+                        <b class="control-label">Loại Sản Phẩm: </b>
+                        <div class="col-md-10">
+                            <select class="form-control w-auto" id="listLoai">
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <b class="control-label">Mô tả: </b>
+                        <div class="col-md-10">
+                            <textarea class="form-control" type="text" id="motaSP"></textarea>
+                        </div>
+                    </div>
+                    <div class="form-group d-inline-block">
+                        <b class="control-label">Ảnh Sản Phẩm: </b>
+                        <input type="file" id="realfile">
+                        <div class="col-md-10">
+                            <img src="" id="anhSP" alt="Alternate Text" width="90" style='text-align: right;' />
+                        </div>
+                    </div>
+                    <div class="ss-2">
+                        <div class="customize-section type">
+                            <div class="customize-title">
+                                <div class="left">Chọn Loại</div>
+                                <div class="right">
+                                    <i class="fas fa-angle-down" aria-hidden="true"></i>
+                                </div>
+                            </div>
+                            <div class="customize-content">
+                                <div class="topping-wrap">
+                                    <label class="container-radio">
+                                        <span>Lạnh</span>
+                                        <input type="checkbox" name="type" value="Lạnh">
+                                        <span class="checkmark"></span>
+                                        <span class="topping-price"></span>
+                                    </label>
+                                    <span class="topping-price"></span>
+                                    <label class="container-radio">
+                                        <span>Nóng</span>
+                                        <input type="checkbox" name="type" value="Nóng">
+                                        <span class="checkmark"></span>
+                                    </label>
+                                    <span class="topping-price"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="customize-section size">
+                            <div class="customize-title">
+                                <div class="left">Chọn Size</div>
+                                <div class="right">
+                                    <i class="fas fa-angle-down" aria-hidden="true"></i>
+                                </div>
+                            </div>
+                            <div class="customize-content">
+                                <div class="topping-wrap">
+                                    <label class="container-radio">
+                                        <span>M</span>
+                                        <input type="checkbox" name="type" value="M">
+                                        <span class="checkmark"></span>
+
+                                    </label>
+                                    <span class="topping-price"></span>
+                                    <label class="container-radio">
+                                        <span>L</span>
+                                        <input type="checkbox" name="type" value="L">
+                                        <span class="checkmark"></span>
+                                    </label>
+                                    <span class="topping-price"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="customize-section sugar">
+                            <div class="customize-title">
+                                <div class="left">Chọn Đường</div>
+                                <div class="right">
+                                    <i class="fas fa-angle-down" aria-hidden="true"></i>
+                                </div>
+                            </div>
+                            <div class="customize-content">
+                                <div class="topping-wrap">
+                                    <label class="container-radio">
+                                        <span>0%</span>
+                                        <input type="checkbox" name="type" value="0">
+                                        <span class="checkmark"></span>
+                                        <span class="topping-price"></span>
+                                    </label>
+                                    <span class="topping-price"></span>
+                                    <label class="container-radio">
+                                        <span>50%</span>
+                                        <input type="checkbox" name="type" value="50">
+                                        <span class="checkmark"></span>
+                                    </label>
+                                    <span class="topping-price"></span>
+                                    <label class="container-radio">
+                                        <span>70%</span>
+                                        <input type="checkbox" name="type" value="70">
+                                        <span class="checkmark"></span>
+                                    </label>
+                                    <span class="topping-price"></span>
+                                    <label class="container-radio">
+                                        <span>100%</span>
+                                        <input type="checkbox" name="type" value="100">
+                                        <span class="checkmark"></span>
+                                    </label>
+                                    <span class="topping-price"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="customize-section ice">
+                            <div class="customize-title">
+                                <div class="left">Chọn Đá</div>
+                                <div class="right">
+                                    <i class="fas fa-angle-down" aria-hidden="true"></i>
+                                </div>
+                            </div>
+                            <div class="customize-content">
+                                <div class="topping-wrap">
+                                    <label class="container-radio">
+                                        <span>0%</span>
+                                        <input type="checkbox" name="type" value="0">
+                                        <span class="checkmark"></span>
+                                        <span class="topping-price"></span>
+                                    </label>
+                                    <span class="topping-price"></span>
+                                    <label class="container-radio">
+                                        <span>50%</span>
+                                        <input type="checkbox" name="type" value="50">
+                                        <span class="checkmark"></span>
+                                    </label>
+                                    <span class="topping-price"></span>
+                                    <label class="container-radio">
+                                        <span>70%</span>
+                                        <input type="checkbox" name="type" value="70">
+                                        <span class="checkmark"></span>
+                                    </label>
+                                    <span class="topping-price"></span>
+                                    <label class="container-radio">
+                                        <span>100%</span>
+                                        <input type="checkbox" name="type" value="100">
+                                        <span class="checkmark"></span>
+                                    </label>
+                                    <span class="topping-price"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="customize-section topping">
+                            <div class="customize-title">
+                                <div class="left">Chọn topping</div>
+                                <div class="right">
+                                    <i class="fas fa-angle-down" aria-hidden="true"></i>
+                                </div>
+                            </div>
+                            <div class="customize-content" id="tpCustom">
+                            </div>
+                        </div>
+                    </div>`
+            document.querySelector("#CustomModalLabel").innerHTML = name
+            var relfileBtn = document.querySelector("#realfile")
+            const reader = new FileReader();
+            relfileBtn.addEventListener("change", function () {
+                var file = relfileBtn.files[0] 
+                if (file) {
+                    reader.readAsDataURL(file)
+                }
+            })
+
+            reader.addEventListener("load", function () {
+                document.querySelector("#anhSP").src = reader.result
+            }, false)
+
+            $.post("/Admin/GetSP", { id: id }).done(function (data) {
+                var sp = JSON.parse(data)
+                document.querySelector("#tenSP").value = sp[1]
+                document.querySelector("#giaSP").value = sp[2]
+                document.querySelector("#giamgiaSP").value = sp[3]
+                document.querySelector("#anhSP").src = sp[5]      
+                document.querySelector("#motaSP").innerHTML = sp[6]
+
+                var listLoai = JSON.parse(sp[11])
+                var htmlListLoai = ''
+                for (var i = 0; i < listLoai.length; i++) {
+                    htmlListLoai += `<option value="` + listLoai[i][1] + `">` + listLoai[i][2] +`</option>`
+                }
+
+                document.querySelector("#listLoai").innerHTML = htmlListLoai
+
+                var listTP = JSON.parse(sp[12])
+                var htmlListTP = ''
+                for (var i = 0; i < listTP.length; i++) {
+                    htmlListTP += `
+                        <div class="topping-wrap" data-price="`+ listTP[i][2] + `">
+                            <label class="container-checkbox">
+                                <span>`+ listTP[i][1] + `</span>
+                                <input type="checkbox" name="topping" value="`+ listTP[i][0] + `">
+                                <span class="checkmark"></span>
+                            </label>
+                            <span class="topping-price">+ `+ money(parseInt(listTP[i][2])) + `</span>
+                        </div>`
+                }
+                document.querySelector("#tpCustom").innerHTML = htmlListTP
+
+                //tich chon loai san pham
+
+                document.querySelector("#listLoai").value = sp[4]
+
+                // tich chon loai
+                var all = [...document.querySelectorAll(".type input")]
+                for (var i = 0; i < all.length; i++) {
+                    if (sp[7].includes(all[i].value)) {
+                        all[i].checked = true
+                    }
+                }
+
+                //tich chon size
+                var all = [...document.querySelectorAll(".size input")]
+                for (var i = 0; i < all.length; i++) {
+                    if (sp[8].includes(all[i].value)) {
+                        all[i].checked = true
+                    }
+                }
+
+                //tich chon đường
+                var all = [...document.querySelectorAll(".sugar input")]
+                for (var i = 0; i < all.length; i++) {
+                    if (sp[9].includes(all[i].value)) {
+                        all[i].checked = true
+                    }
+                }
+
+                //tich chon đá
+                var all = [...document.querySelectorAll(".ice input")]
+                for (var i = 0; i < all.length; i++) {
+                    if (sp[10].includes(all[i].value)) {
+                        all[i].checked = true
+                    }
+                }
+
+                //tich chon topping
+                var all = [...document.querySelectorAll(".topping input")]
+                for (var i = 0; i < all.length; i++) {
+                    if (sp[13].includes('"' + all[i].value + '"') || sp[13].includes("'" + all[i].value + "'")) {
+                        all[i].checked = true
+                    }
+                }
+
+                document.querySelector("#CustomModalFooter").innerHTML = `<button class="btn btn-danger" type="button" data-dismiss="modal">Hủy Bỏ</button>
+                                                                      <button class="btn btn-success" data-dismiss="modal" onclick="EditSP(`+ id + `)" href="#">Xác Nhận</button>`
+            })
+        }
+
+        function EditSP(id) {
+            // UPDATE SP
+            var tenSP = document.querySelector("#tenSP").value
+            var giaSP = document.querySelector("#giaSP").value
+            var giamgiaSP = document.querySelector("#giamgiaSP").value
+            var maLoai = document.querySelector("#listLoai").value
+            var mota = document.querySelector("#motaSP").innerHTML
+            var anh = document.querySelector("#anhSP").src
+
+            var inputTypeArr = new Array()
+            var inputType = [...document.querySelectorAll(".type input")]
+            for (var i = 0; i < inputType.length; i++) {
+                if (inputType[i].checked) {
+                    inputTypeArr.push(inputType[i].value)
+                }
+            }
+            var listLoai = JSON.stringify(inputTypeArr).replaceAll("\"", "\'")
+
+
+            var inputSizeArr = new Array()
+            var inputSize = [...document.querySelectorAll(".size input")]
+            for (var i = 0; i < inputSize.length; i++) {
+                if (inputSize[i].checked) {
+                    inputSizeArr.push(inputSize[i].value)
+                }
+            }
+            var listSize = JSON.stringify(inputSizeArr).replaceAll("\"", "\'")
+
+            var inputSugarArr = new Array()
+            var inputSugar = [...document.querySelectorAll(".sugar input")]
+            for (var i = 0; i < inputSugar.length; i++) {
+                if (inputSugar[i].checked) {
+                    inputSugarArr.push(inputSugar[i].value)
+                }
+            }
+            var listDuong = JSON.stringify(inputSugarArr).replaceAll("\"", "\'")
+
+            var inputIceArr = new Array()
+            var inputIce = [...document.querySelectorAll(".ice input")]
+            for (var i = 0; i < inputIce.length; i++) {
+                if (inputIce[i].checked) {
+                    inputIceArr.push(inputIce[i].value)
+                }
+            }
+            var listDa = JSON.stringify(inputIceArr).replaceAll("\"", "\'")
+
+            var inputTPArr = new Array()
+            var inputTP = [...document.querySelectorAll(".topping input")]
+            for (var i = 0; i < inputTP.length; i++) {
+                if (inputTP[i].checked) {
+                    inputTPArr.push(inputTP[i].value)
+                }
+            }
+            var listTP = JSON.stringify(inputTPArr).replaceAll("\"", "\'")
+
+            $.post("/Admin/UpdateSP", {
+                ID: id,
+                tenSP: tenSP,
+                Gia: giaSP,
+                Mota: mota,
+                Anh: anh,
+                ChonLoai: listLoai,
+                ChonSize: listSize,
+                ChonDuong: listDuong,
+                ChonDa: listDa,
+                ChonTopping: listTP,
+                GiamGia: giamgiaSP,
+                maLoai: maLoai,
+            }).done(function (data) {
+                if (data == "OK") {
+                    location.reload()
+                } else {
+                    document.querySelector('.toast-body').innerText = "🔔 Vui Lòng Nhập Đúng Thông Tin!!!"
+                    $('.toast').toast('show')
+                }
+            })
+        }
+
+        function CreateFunc() {
+            document.querySelector("#CustomModalBody").innerHTML = `
+                    <div class="form-group d-inline-block">
+                        <b class="control-label">Tên Sản Phẩm: </b>
+                        <div class="col-md-10">
+                            <input class="form-control" type="text" id="tenSP">
+                        </div>
+                    </div>
+                    <div class="form-group d-inline-block">
+                        <b class="control-label">Giá Sản Phẩm: </b>
+                        <div class="col-md-10">
+                            <input class="form-control" type="text" id="giaSP">
+                        </div>
+                    </div>
+                    <div class="form-group d-inline-block">
+                        <b class="control-label">Giảm Giá: </b>
+                        <div class="col-md-10">
+                            <input class="form-control" type="text" id="giamgiaSP">
+                        </div>
+                    </div>
+                    <div class="form-group d-inline-block">
+                        <b class="control-label">Loại Sản Phẩm: </b>
+                        <div class="col-md-10">
+                            <select class="form-control w-auto" id="listLoai">
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <b class="control-label">Mô tả: </b>
+                        <div class="col-md-10">
+                            <textarea class="form-control" type="text" id="motaSP"></textarea>
+                        </div>
+                    </div>
+                    <div class="form-group d-inline-block">
+                        <b class="control-label">Ảnh Sản Phẩm: </b>
+                        <input type="file" id="realfile">
+                        <div class="col-md-10">
+                            <img src="https://i.imgur.com/a5c9Ils.png" id="anhSP" alt="Alternate Text" width="90" style='text-align: right;' />
+                        </div>
+                    </div>
+                    <div class="ss-2">
+                        <div class="customize-section type">
+                            <div class="customize-title">
+                                <div class="left">Chọn Loại</div>
+                                <div class="right">
+                                    <i class="fas fa-angle-down" aria-hidden="true"></i>
+                                </div>
+                            </div>
+                            <div class="customize-content">
+                                <div class="topping-wrap">
+                                    <label class="container-radio">
+                                        <span>Lạnh</span>
+                                        <input type="checkbox" name="type" value="Lạnh">
+                                        <span class="checkmark"></span>
+                                        <span class="topping-price"></span>
+                                    </label>
+                                    <span class="topping-price"></span>
+                                    <label class="container-radio">
+                                        <span>Nóng</span>
+                                        <input type="checkbox" name="type" value="Nóng">
+                                        <span class="checkmark"></span>
+                                    </label>
+                                    <span class="topping-price"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="customize-section size">
+                            <div class="customize-title">
+                                <div class="left">Chọn Size</div>
+                                <div class="right">
+                                    <i class="fas fa-angle-down" aria-hidden="true"></i>
+                                </div>
+                            </div>
+                            <div class="customize-content">
+                                <div class="topping-wrap">
+                                    <label class="container-radio">
+                                        <span>M</span>
+                                        <input type="checkbox" name="type" value="M">
+                                        <span class="checkmark"></span>
+
+                                    </label>
+                                    <span class="topping-price"></span>
+                                    <label class="container-radio">
+                                        <span>L</span>
+                                        <input type="checkbox" name="type" value="L">
+                                        <span class="checkmark"></span>
+                                    </label>
+                                    <span class="topping-price"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="customize-section sugar">
+                            <div class="customize-title">
+                                <div class="left">Chọn Đường</div>
+                                <div class="right">
+                                    <i class="fas fa-angle-down" aria-hidden="true"></i>
+                                </div>
+                            </div>
+                            <div class="customize-content">
+                                <div class="topping-wrap">
+                                    <label class="container-radio">
+                                        <span>0%</span>
+                                        <input type="checkbox" name="type" value="0">
+                                        <span class="checkmark"></span>
+                                        <span class="topping-price"></span>
+                                    </label>
+                                    <span class="topping-price"></span>
+                                    <label class="container-radio">
+                                        <span>50%</span>
+                                        <input type="checkbox" name="type" value="50">
+                                        <span class="checkmark"></span>
+                                    </label>
+                                    <span class="topping-price"></span>
+                                    <label class="container-radio">
+                                        <span>70%</span>
+                                        <input type="checkbox" name="type" value="70">
+                                        <span class="checkmark"></span>
+                                    </label>
+                                    <span class="topping-price"></span>
+                                    <label class="container-radio">
+                                        <span>100%</span>
+                                        <input type="checkbox" name="type" value="100">
+                                        <span class="checkmark"></span>
+                                    </label>
+                                    <span class="topping-price"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="customize-section ice">
+                            <div class="customize-title">
+                                <div class="left">Chọn Đá</div>
+                                <div class="right">
+                                    <i class="fas fa-angle-down" aria-hidden="true"></i>
+                                </div>
+                            </div>
+                            <div class="customize-content">
+                                <div class="topping-wrap">
+                                    <label class="container-radio">
+                                        <span>0%</span>
+                                        <input type="checkbox" name="type" value="0">
+                                        <span class="checkmark"></span>
+                                        <span class="topping-price"></span>
+                                    </label>
+                                    <span class="topping-price"></span>
+                                    <label class="container-radio">
+                                        <span>50%</span>
+                                        <input type="checkbox" name="type" value="50">
+                                        <span class="checkmark"></span>
+                                    </label>
+                                    <span class="topping-price"></span>
+                                    <label class="container-radio">
+                                        <span>70%</span>
+                                        <input type="checkbox" name="type" value="70">
+                                        <span class="checkmark"></span>
+                                    </label>
+                                    <span class="topping-price"></span>
+                                    <label class="container-radio">
+                                        <span>100%</span>
+                                        <input type="checkbox" name="type" value="100">
+                                        <span class="checkmark"></span>
+                                    </label>
+                                    <span class="topping-price"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="customize-section topping">
+                            <div class="customize-title">
+                                <div class="left">Chọn topping</div>
+                                <div class="right">
+                                    <i class="fas fa-angle-down" aria-hidden="true"></i>
+                                </div>
+                            </div>
+                            <div class="customize-content" id="tpCustom">
+                            </div>
+                        </div>
+                    </div>`
+            document.querySelector("#CustomModalLabel").innerHTML = "Thêm Mới Sản Phẩm"
+            var relfileBtn = document.querySelector("#realfile")
+            const reader = new FileReader();
+            relfileBtn.addEventListener("change", function () {
+                var file = relfileBtn.files[0]
+                if (file) {
+                    reader.readAsDataURL(file)
+                }
+            })
+
+            reader.addEventListener("load", function () {
+                document.querySelector("#anhSP").src = reader.result
+            }, false)
+            $.post("/Admin/GetLoaiVsTP", {}).done(function (data) {
+                var json = JSON.parse(data)
+
+                var listLoai = JSON.parse(json[0])
+                var htmlListLoai = ''
+                for (var i = 0; i < listLoai.length; i++) {
+                    htmlListLoai += `<option value="` + listLoai[i][1] + `">` + listLoai[i][2] + `</option>`
+                }
+                document.querySelector("#listLoai").innerHTML = htmlListLoai
+
+                var listTP = JSON.parse(json[1])
+                var htmlListTP = ''
+                for (var i = 0; i < listTP.length; i++) {
+                    htmlListTP += `
+                        <div class="topping-wrap" data-price="`+ listTP[i][2] + `">
+                            <label class="container-checkbox">
+                                <span>`+ listTP[i][1] + `</span>
+                                <input type="checkbox" name="topping" value="`+ listTP[i][0] + `">
+                                <span class="checkmark"></span>
+                            </label>
+                            <span class="topping-price">+ `+ money(parseInt(listTP[i][2])) + `</span>
+                        </div>`
+                }
+                document.querySelector("#tpCustom").innerHTML = htmlListTP
+                document.querySelector("#CustomModalFooter").innerHTML = `<button class="btn btn-danger" type="button" data-dismiss="modal">Hủy Bỏ</button>
+                                                                      <button class="btn btn-success" data-dismiss="modal" onclick="CreateSP()" href="#">Xác Nhận</button>`
+            })
+        }
+
+        function CreateSP() {
+            var tenSP = document.querySelector("#tenSP").value
+            var giaSP = document.querySelector("#giaSP").value
+            var giamgiaSP = document.querySelector("#giamgiaSP").value
+            var maLoai = document.querySelector("#listLoai").value
+            var mota = document.querySelector("#motaSP").innerHTML
+            var anh = document.querySelector("#anhSP").src
+
+            var inputTypeArr = new Array()
+            var inputType = [...document.querySelectorAll(".type input")]
+            for (var i = 0; i < inputType.length; i++) {
+                if (inputType[i].checked) {
+                    inputTypeArr.push(inputType[i].value)
+                }
+            }
+            var listLoai = JSON.stringify(inputTypeArr).replaceAll("\"", "\'")
+
+
+            var inputSizeArr = new Array()
+            var inputSize = [...document.querySelectorAll(".size input")]
+            for (var i = 0; i < inputSize.length; i++) {
+                if (inputSize[i].checked) {
+                    inputSizeArr.push(inputSize[i].value)
+                }
+            }
+            var listSize = JSON.stringify(inputSizeArr).replaceAll("\"", "\'")
+
+            var inputSugarArr = new Array()
+            var inputSugar = [...document.querySelectorAll(".sugar input")]
+            for (var i = 0; i < inputSugar.length; i++) {
+                if (inputSugar[i].checked) {
+                    inputSugarArr.push(inputSugar[i].value)
+                }
+            }
+            var listDuong = JSON.stringify(inputSugarArr).replaceAll("\"", "\'")
+
+            var inputIceArr = new Array()
+            var inputIce = [...document.querySelectorAll(".ice input")]
+            for (var i = 0; i < inputIce.length; i++) {
+                if (inputIce[i].checked) {
+                    inputIceArr.push(inputIce[i].value)
+                }
+            }
+            var listDa = JSON.stringify(inputIceArr).replaceAll("\"", "\'")
+
+            var inputTPArr = new Array()
+            var inputTP = [...document.querySelectorAll(".topping input")]
+            for (var i = 0; i < inputTP.length; i++) {
+                if (inputTP[i].checked) {
+                    inputTPArr.push(inputTP[i].value)
+                }
+            }
+            var listTP = JSON.stringify(inputTPArr).replaceAll("\"", "\'")
+
+            $.post("/Admin/CreateSP", {
+                tenSP: tenSP,
+                Gia: giaSP,
+                Mota: mota,
+                Anh: anh,
+                ChonLoai: listLoai,
+                ChonSize: listSize,
+                ChonDuong: listDuong,
+                ChonDa: listDa,
+                ChonTopping: listTP,
+                GiamGia: giamgiaSP,
+                maLoai: maLoai,
+            }).done(function (data) {
+                if (data == "OK") {
+                    location.reload()
+                } else {
+                    document.querySelector('.toast-body').innerText = "🔔 Vui Lòng Nhập Đúng Thông Tin!!!"
+                    $('.toast').toast('show')
+                }
+            })
+        }
+
+    </script>
+}
+

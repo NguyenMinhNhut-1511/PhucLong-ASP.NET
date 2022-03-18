@@ -1,0 +1,14 @@
+﻿@model IEnumerable<WebTraSua.Models.LoaiSanPham>
+
+<div class="order-sidebar sidebar-left">
+    <div class="cat-title">Danh mục</div>
+    <div class="list-cat">
+        @foreach (var item in Model)
+        {
+            <div class="cat-item" catSlug=@item.maLoai>
+                <div class="cat-name" catSlug=@item.maLoai>@item.tenLoai</div>
+                <div class="cat-amount" catSlug=@item.maLoai>@ViewBag.Count[item.ID]</div>
+            </div>
+        }
+    </div>
+</div>

@@ -1,0 +1,147 @@
+﻿@model IEnumerable<WebTraSua.Models.Topping>
+
+@{
+    ViewBag.Title = "Topping";
+    Layout = "~/Views/Shared/_Layout_Admin.cshtml";
+}
+
+<!-- DataTales Example -->
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary d-inline-block">Danh Sách Topping</h6>
+        <button onclick="CreateFunc()" data-toggle="modal" data-target="#CustomModal" class="float-right btn btn-primary">Thêm Sản Phẩm</button>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered" id="dataTable" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Tên</th>
+                        <th>Giá</th>
+                        <th>Hành Động</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.ID</td>
+                            <td>@item.tenTP</td>
+                            <td>@String.Format("{0:0,0}", item.Gia)đ</td>
+                            <td>
+                                <button onclick="EditFunc('@item.ID','@item.tenTP','@item.Gia')" data-toggle="modal" data-target="#CustomModal" class="btn btn-primary btn-circle"><i class="fas fa-edit"></i></button>
+                                <button onclick="DeleteFunc('@item.ID','@item.tenTP')" data-toggle="modal" data-target="#CustomModal" class="btn btn-danger btn-circle"><i class="fas fa-trash"></i></button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section Scripts{  
+    <!-- Custom styles for this page -->
+    <link href="~/vendor/datatables/dataTables.bootstrap4.css" rel="stylesheet" />
+
+    <!-- Page level plugins -->
+    <script src="~/vendor/datatables/jquery.dataTables.js"></script>
+    <script src="~/vendor/datatables/dataTables.bootstrap4.js"></script>
+
+    <!-- Page level custom scripts -->
+    <script src="~/Scripts/demo/datatables-demo.js"></script>
+
+    <script>
+        function money(x) {
+            return x.toLocaleString('it-IT', { style: 'currency', currency: 'VND' });
+        }
+
+        function ResetCustomModal() {
+            document.querySelector("#CustomModalLabel").innerHTML = ""
+            document.querySelector("#CustomModalBody").innerHTML = ""
+            document.querySelector("#CustomModalFooter").innerHTML = ""
+        }
+
+        function DeleteFunc(id, name) {
+            ResetCustomModal()
+            if (id != null) {
+                document.querySelector("#CustomModalLabel").innerHTML = "Bạn có thật sự muốn xóa ?"
+                document.querySelector("#CustomModalBody").innerHTML = 'Nhấn "Xác Nhận" để xóa Topping <b>' + name + "</b> !"
+                document.querySelector("#CustomModalFooter").innerHTML = `<button class="btn btn-danger" type="button" data-dismiss="modal">Hủy Bỏ</button>
+                                                               <button class="btn btn-success" data-dismiss="modal" onclick="DeleteTP(`+ id + `)" href="#">Xác Nhận</button>`
+            }
+        }
+
+        function DeleteTP(id) {
+            $.post("/Admin/BlockTP", { id: id }).done(function () {
+                ResetCustomModal()
+                location.reload()
+            })
+        }
+
+        function EditFunc(id, name, gia) {
+            document.querySelector("#CustomModalBody").innerHTML = `
+                    <div class="form-group">
+                        <b class="control-label">Tên Topping: </b>
+                        <div class="col-md-10">
+                            <input class="form-control" type="text" id="tenTP" value="`+ name +`">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <b class="control-label">Giá Topping: </b>
+                        <div class="col-md-10">
+                            <input class="form-control" type="text" id="giaTP" value="`+gia+`">
+                        </div>
+                    </div>`
+            document.querySelector("#CustomModalLabel").innerHTML = name
+            document.querySelector("#CustomModalFooter").innerHTML = `<button class="btn btn-danger" type="button" data-dismiss="modal">Hủy Bỏ</button>
+                                                                      <button class="btn btn-success" data-dismiss="modal" onclick="EditTP('`+ id + `')" href="#">Xác Nhận</button>`
+        }
+
+        function EditTP(id) {
+            var tenTP = document.querySelector("#tenTP").value
+            var giaTP = document.querySelector("#giaTP").value
+            $.post("/Admin/UpdateTP", { id: id, name: tenTP, gia : giaTP }).done(function (data) {
+                if (data == "OK") {
+                    location.reload()
+                } else {
+                    document.querySelector('.toast-body').innerText = "🔔 Vui Lòng Nhập Đúng Thông Tin!!!"
+                    $('.toast').toast('show')
+                }
+            })
+        }
+
+        function CreateFunc() {
+            document.querySelector("#CustomModalBody").innerHTML = `
+                    <div class="form-group">
+                        <b class="control-label">Tên Topping: </b>
+                        <div class="col-md-10">
+                            <input class="form-control" type="text" id="tenTP" value="">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <b class="control-label">Giá Topping: </b>
+                        <div class="col-md-10">
+                            <input class="form-control" type="text" id="giaTP" value="">
+                        </div>
+                    </div>`
+            document.querySelector("#CustomModalLabel").innerHTML = "Thêm Mới Topping"
+            document.querySelector("#CustomModalFooter").innerHTML = `<button class="btn btn-danger" type="button" data-dismiss="modal">Hủy Bỏ</button>
+                                                                      <button class="btn btn-success" data-dismiss="modal" onclick="CreateTP()" href="#">Xác Nhận</button>`
+        }
+
+        function CreateTP() {
+            var tenTP = document.querySelector("#tenTP").value
+            var giaTP = document.querySelector("#giaTP").value
+            $.post("/Admin/CreateTP", {name: tenTP, gia: giaTP }).done(function (data) {
+                if (data == "OK") {
+                    location.reload()
+                } else {
+                    document.querySelector('.toast-body').innerText = "🔔 Vui Lòng Nhập Đúng Thông Tin!!!"
+                    $('.toast').toast('show')
+                }
+            })
+        }
+    </script>
+}

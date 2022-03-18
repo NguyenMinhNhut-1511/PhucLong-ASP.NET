@@ -1,0 +1,160 @@
+﻿
+@model IEnumerable<WebTraSua.Models.GioHang>
+
+@{
+    ViewBag.Title = "Giỏ Hàng 4 Anh Em";
+    Layout = "~/Views/Shared/_LayoutOrder.cshtml";
+}
+<head>
+    <link href="~/Content/checkout.css" rel="stylesheet" />
+</head>
+
+<div class="page-checkout">
+    <div class="checkout-top">
+        <div class="left">
+            <i class="fas fa-arrow-left" aria-hidden="true"></i>
+        </div>
+        <div class="center">Thanh toán</div>
+        <div class="right"></div>
+    </div>
+    <div class="checkout-detail">
+        <div class="checkout-detail-left">
+            <div class="delivery-info">
+                <div class="delivery-info-title">
+                    <div class="delivery-info-title-left">Thông tin giao hàng</div>
+                    <div class="right"><i class="fas fa-angle-down" aria-hidden="true"></i></div>
+                </div>
+                <div class="delivery-info-content">
+                    <div class="wrap-input">
+                        <i class="fas fa-user" aria-hidden="true"></i>
+                        <input type="text" id="customer-name" placeholder="Tên người nhận" value="@Session["Name"]">
+                    </div>
+                    <div class="wrap-input">
+                        <i class="fas fa-phone-alt" aria-hidden="true"></i>
+                        <input type="text" id="customer-phone" placeholder="Số điện thoại người nhận" value="@Session["SDT"]">
+                    </div>
+                    <div class="delivery-location">
+                        <div class="delivery-location-title">Giao đến</div>
+                        <div class="wrap-input wrap-location">
+                            <i class="fas fa-map-marker-alt" aria-hidden="true"></i>
+                            <input type="text" id="customer-location" placeholder="Địa chỉ người nhận" value="@Session["DiaChi"]">
+                        </div>
+                        <div id="map-checkout"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="delivery-info payment-method">
+                <div class="delivery-info-title">
+                    <div class="delivery-info-title-left">Phương thức thanh toán</div>
+                    <div class="right"><i class="fas fa-angle-down" aria-hidden="true"></i></div>
+                </div>
+                <div class="delivery-info-content">
+                    <label class="container-radio">
+                        <span>Thanh toán khi nhận hàng</span>
+                        <input checked type="radio" name="type" value="cod">
+                        <span class="checkmark-radio"></span>
+                    </label>
+                    <label class="container-radio">
+                        <span>Thanh toán qua MOMO</span>
+                        <input type="radio" name="type" value="momo">
+                        <span class="checkmark-radio"></span>
+                    </label>
+                </div>
+            </div>
+
+        </div>
+        <div class="checkout-detail-right">
+            <div class="delivery-info order-info">
+                <div class="delivery-info-title">
+                    <div class="delivery-info-title-left">Thông tin đơn hàng</div>
+                    <div class="right"><i class="fas fa-angle-down" aria-hidden="true"></i></div>
+                </div>
+                <div class="delivery-info-content">
+                    <div class="list-checkout">
+                        @foreach (var item in Model)
+                        {
+                            <div class="product-checkout">
+                                <img src="@item.Anh" alt="">
+                                <div class="product-checkout-content">
+                                    <div class="title">@item.TenSP</div>
+                                    <div class="customizations">
+                                        @if (item.Loai != "")
+                                        {<span>Loại @item.Loai,</span>}
+                                        @if (item.Size != "")
+                                        {<span>Size @item.Size,</span>}
+                                        @if (item.Duong != "")
+                                        {<span>@item.Duong% Đường,</span>}
+                                        @if (item.Da != "")
+                                        {<span>@item.Da% Đá,</span>}
+                                        @{
+                                            var listName = item._GetNameTP();
+                                            if (listName != null && listName.Count() > 0)
+                                            {
+                                                foreach (var item2 in listName)
+                                                {
+                                                    <span>@item2 ,</span>
+                                                }
+                                            }
+                                        }
+                                    </div>
+                                    <div class="quantity">@String.Format("{0:0,0}", item.Gia)đ x @item.SL = @String.Format("{0:0,0}", item.Gia * item.SL)đ</div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                    <div class="checkout-price">
+                        <div class="price-top">
+                            <div class="quantity">Tổng số lượng cốc: <span class="quanity-number">@ViewBag.TongSoLuong</span> cốc</div>
+                            <div class="total">
+                                <span class="total-title">Tổng:</span>
+                                <div class="txt-right total-number">@String.Format("{0:0,0}", ViewBag.TongTien)đ</div>
+                            </div>
+                        </div>
+                        <div class="transport-price">
+                            <div class="transport-price-title">Phí vận chuyển:</div>
+                            <div class="txt-right"><b>FREESHIP</b></div>
+                        </div>
+                        <div class="grand-total">
+                            <div class="grand-total-title">Tổng cộng:</div>
+                            <div class="txt-right grand-total-number">@String.Format("{0:0,0}", ViewBag.TongTien)đ</div>
+                        </div>
+                    </div>
+                    <div class="wrap-checkout-btn">
+                        <div class="btn-order">ĐẶT HÀNG</div>
+                        <a class="btn-back-to-menu" href="@Url.Action("Index", "Order")">TIẾP TỤC MUA HÀNG</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+        document.querySelector(".btn-order").addEventListener("click", function (e) {
+            var ten = document.querySelector("#customer-name").value
+            var sdt = document.querySelector("#customer-phone").value
+            var diachi = document.querySelector("#customer-location").value
+            var ptship = "cod"
+            var TongTien = "@ViewBag.TongTien"
+            var radio = [...document.querySelectorAll(".container-radio")]
+            for (var i = 0; i < radio.length; i++) {
+                var input = radio[i].querySelector("input")
+                if (input.checked) {
+                    ptship = input.value
+                }
+            }
+            var url = "/GioHang/DatHang?ten=" + ten + "&sdt=" + sdt + "&diachi=" + diachi + "&ptship=" + ptship;
+            $.get(url, null, function (data) {
+                if (data.includes("ERROR")) {
+                    document.querySelector('.toast-body').innerText = "🔔 Vui Lòng Nhập Đầy Đủ Thông Tin!!!"
+                    $('.toast').toast('show')
+                } else if (data.includes("OK")) {
+                    window.location.href = "Accounts/NotifForm?title=Thanh Toán Thành Công&msg=Bạn đã thanh công thành công. Đơn hàng của bạn sẽ được ship đến sớm thôi!"
+                } else if (data.includes("momo.vn")) {
+                    window.location.href = data
+                }
+            }); 
+        })
+    </script>
+}

@@ -1,0 +1,113 @@
+﻿@model IEnumerable<WebTraSua.Models.LoaiSanPham>
+
+@{
+    ViewBag.Title = "LoaiSanPham";
+    Layout = "~/Views/Shared/_Layout_Admin.cshtml";
+}
+
+<!-- DataTales Example -->
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary d-inline-block">Danh Sách Loại Sản Phẩm</h6>
+        <button onclick="CreateFunc()" data-toggle="modal" data-target="#CustomModal" class="float-right btn btn-primary">Thêm Loại Sản Phẩm</button>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered" id="dataTable" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Mã Loại</th>
+                        <th>Tên Loại</th>
+                        <th>Hành Động</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                    <tr>
+                        <td>@item.ID</td>
+                        <td>@item.maLoai</td>
+                        <td>@item.tenLoai</td>
+                        <td>
+                            <button onclick="EditFunc('@item.ID','@item.maLoai','@item.tenLoai')" data-toggle="modal" data-target="#CustomModal" class="btn btn-primary btn-circle"><i class="fas fa-edit"></i></button>
+                        </td>
+                    </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <!-- Custom styles for this page -->
+    <link href="~/vendor/datatables/dataTables.bootstrap4.css" rel="stylesheet" />
+
+    <!-- Page level plugins -->
+    <script src="~/vendor/datatables/jquery.dataTables.js"></script>
+    <script src="~/vendor/datatables/dataTables.bootstrap4.js"></script>
+
+    <!-- Page level custom scripts -->
+    <script src="~/Scripts/demo/datatables-demo.js"></script>
+
+    <script>
+        function EditFunc(id, maLoai, tenLoai) {
+            document.querySelector("#CustomModalBody").innerHTML = `
+                    <div class="form-group">
+                        <b class="control-label">Tên Loại: </b>
+                        <div class="col-md-10">
+                            <input class="form-control" type="text" id="tenLoai" value="`+ tenLoai + `">
+                        </div>
+                    </div>`
+            document.querySelector("#CustomModalLabel").innerHTML = maLoai
+            document.querySelector("#CustomModalFooter").innerHTML = `<button class="btn btn-danger" type="button" data-dismiss="modal">Hủy Bỏ</button>
+                                                                      <button class="btn btn-success" data-dismiss="modal" onclick="EditLoai('`+ maLoai + `')" href="#">Xác Nhận</button>`
+        }
+
+        function EditLoai(maLoai) {
+            var tenLoai = document.querySelector("#tenLoai").value
+            $.post("/Admin/UpdateLoai", { maLoai: maLoai, name: tenLoai }).done(function (data) {
+                if (data == "OK") {
+                    location.reload()
+                } else {
+                    document.querySelector('.toast-body').innerText = "🔔 Vui Lòng Nhập Đúng Thông Tin!!!"
+                    $('.toast').toast('show')
+                }
+            })
+        }
+
+        function CreateFunc() {
+            document.querySelector("#CustomModalBody").innerHTML = `
+                    <div class="form-group">
+                        <b class="control-label">Mã Loại: </b>
+                        <div class="col-md-10">
+                            <input class="form-control" type="text" id="maLoai" value="">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <b class="control-label">Tên Loại: </b>
+                        <div class="col-md-10">
+                            <input class="form-control" type="text" id="tenLoai" value="">
+                        </div>
+                    </div>`
+            document.querySelector("#CustomModalLabel").innerHTML = "Thêm Loại Sản Phẩm"
+            document.querySelector("#CustomModalFooter").innerHTML = `<button class="btn btn-danger" type="button" data-dismiss="modal">Hủy Bỏ</button>
+                                                                      <button class="btn btn-success" data-dismiss="modal" onclick="CreateLoai()" href="#">Xác Nhận</button>`
+        }
+
+        function CreateLoai() {
+            var maLoai = document.querySelector("#maLoai").value
+            var tenLoai = document.querySelector("#tenLoai").value
+            $.post("/Admin/CreateLoai", { maLoai: maLoai, name: tenLoai }).done(function (data) {
+                if (data == "OK") {
+                    location.reload()
+                } else {
+                    document.querySelector('.toast-body').innerText = "🔔 Vui Lòng Nhập Đúng Thông Tin!!!"
+                    $('.toast').toast('show')
+                }
+            })
+
+        }
+    </script>
+}

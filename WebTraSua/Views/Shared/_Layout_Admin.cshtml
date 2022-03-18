@@ -1,0 +1,376 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" type="image/png" href="~/images/logo_200x200.png" />
+    <title>Quản Lý 4 Anh Em</title>
+
+    <!-- Custom fonts for this template-->
+    <link href="~/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+          rel="stylesheet">
+
+    <!-- Custom styles for this template-->
+    <link href="~/Content/sb-admin.css" rel="stylesheet">
+
+    <!-- TinyMCE -->
+    <script src="https://cdn.tiny.cloud/1/yrxuwi6i65pg9i4n1y0wbeurqjkcz0ce2bc7b2dsckudefgy/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
+
+</head>
+
+<body id="page-top">
+
+    <!-- Page Wrapper -->
+    <div id="wrapper">
+
+        <!-- Sidebar -->
+        <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+
+            <!-- Sidebar - Brand -->
+            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="@Url.Action("Index","Admin")">
+                <div class="sidebar-brand-icon rotate-n-15">
+                    <img src="~/images/logo_200x200_w.png" width="70px" alt="Alternate Text" />
+                </div>
+                <div class="sidebar-brand-text mx-3">Admin</div>
+            </a>
+
+            <!-- Divider -->
+            <hr class="sidebar-divider my-0">
+
+
+            <!-- Nav Item - Dashboard -->
+            <li class="nav-item active">
+                <a class="nav-link" href="@Url.Action("Index","Admin")">
+                    <i class="fas fa-fw fa-tachometer-alt"></i>
+                    <span>Thống Kê Doanh Thu</span>
+                </a>
+            </li>
+
+            <!-- Divider -->
+            <hr class="sidebar-divider">
+
+            <!-- Heading -->
+            <div class="sidebar-heading">
+                Quản Lý Đơn Hàng
+            </div>
+
+            <li class="nav-item">
+                <a class="nav-link" href="@Url.Action("DonHangChuaXacNhan","Admin")">
+                    <i class="fas fa-times fa-chart-area"></i>
+                    <span>Chưa Xác Nhận</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="@Url.Action("DonHangDaXacNhan","Admin")">
+                    <i class="fas fa-check fa-chart-area"></i>
+                    <span>Đã Xác Nhận</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="@Url.Action("GiaoHang","Admin")">
+                    <i class="fas fa-shipping-fast fa-chart-area"></i>
+                    <span>Đang Giao</span>
+                </a>
+            </li>
+
+            <!-- Divider -->
+            <hr class="sidebar-divider">
+
+            <!-- Heading -->
+            <div class="sidebar-heading">
+                Quản Lý Sản Phẩm
+            </div>
+
+            <!-- Nav Item - Quản Lý Loại SP -->
+
+            <li class="nav-item">
+                <a class="nav-link" href="@Url.Action("LoaiSanPham","Admin")">
+                    <i class="fas fa-coffee fa-chart-area"></i>
+                    <span>Loại Sản Phẩm</span>
+                </a>
+            </li>
+
+            <!-- Nav Item - Quản Lý Sản Phẩm -->
+
+            <li class="nav-item">
+                <a class="nav-link" href="@Url.Action("SanPham","Admin")">
+                    <i class="fas fa-coffee fa-chart-area"></i>
+                    <span>Sản Phẩm</span>
+                </a>
+            </li>
+
+            <!-- Nav Item - Quản Lý Topping -->
+
+            <li class="nav-item">
+                <a class="nav-link" href="@Url.Action("Topping","Admin")">
+                    <i class="fas fa-plus-circle fa-chart-area"></i>
+                    <span>Toppings</span>
+                </a>
+            </li>
+
+            <!-- Divider -->
+            <hr class="sidebar-divider">
+
+            <!-- Heading -->
+            <div class="sidebar-heading">
+                Quản Lý Hóa Đơn
+            </div>
+
+            <li class="nav-item">
+                <a class="nav-link" href="@Url.Action("LichSuHoaDon","Admin")">
+                    <i class="fas fa-history fa-chart-area"></i>
+                    <span>Lịch Sử Giao Dịch</span>
+                </a>
+            </li>
+
+            <!-- Divider -->
+            <hr class="sidebar-divider">
+
+            <!-- Heading -->
+            <div class="sidebar-heading">
+                Người Dùng
+            </div>
+
+            <li class="nav-item">
+                <a class="nav-link" href="@Url.Action("QuanLyNguoiDung","Admin")">
+                    <i class="fas fa-users fa-chart-area"></i>
+                    <span>Quản Lý Người Dùng</span>
+                </a>
+            </li>
+
+            <!-- Divider -->
+            <hr class="sidebar-divider d-none d-md-block">
+
+            <!-- Sidebar Toggler (Sidebar) -->
+            <div class="text-center d-none d-md-inline">
+                <button class="rounded-circle border-0" id="sidebarToggle"></button>
+            </div>
+
+        </ul>
+        <!-- End of Sidebar -->
+        <!-- Content Wrapper -->
+        <div id="content-wrapper" class="d-flex flex-column">
+            <!-- Main Content -->
+            <div id="content">
+
+                <!-- Topbar -->
+                <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+
+                    <!-- Sidebar Toggle (Topbar) -->
+                    <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+                        <i class="fa fa-bars"></i>
+                    </button>
+
+                    <!-- Topbar Navbar -->
+                    <ul class="navbar-nav ml-auto">
+
+                        <!-- Nav Item - Messages -->
+                        <li class="nav-item no-arrow">
+                            <h5 id="time" style="padding-top: 1.4rem; color:black; float:right;">00:00</h5>
+                        </li>
+
+                        <div class="topbar-divider d-none d-sm-block"></div>
+
+                        <!-- Nav Item - User Information -->
+                        <li class="nav-item dropdown no-arrow">
+                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
+                               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">@Session["NameAdmin"]</span>
+                                <img class="img-profile rounded-circle"
+                                     src="~/images/undraw_profile.svg">
+                            </a>
+                            <!-- Dropdown - User Information -->
+                            <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
+                                 aria-labelledby="userDropdown">
+                                <!--<a class="dropdown-item" href="#">
+                                    <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
+                                    Settings
+                                </a>
+                                <div class="dropdown-divider"></div>-->
+                                <a onclick="ChangePass()" class="dropdown-item" href="#" data-toggle="modal" data-target="#CustomModal">
+                                    <i class="fas fa-key fa-sm fa-fw mr-2 text-gray-400"></i>
+                                    Đổi Mật Khẩu
+                                </a>
+                                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
+                                    <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+                                    Đăng Xuât
+                                </a>
+                            </div>
+                        </li>
+
+                    </ul>
+
+                </nav>
+                <!-- End of Topbar -->
+                <!-- Begin Page Content -->
+                <div class="container-fluid">
+                    @RenderBody()
+                </div>
+                <!-- /.container-fluid -->
+
+            </div>
+            <!-- End of Main Content -->
+            <!-- Footer
+            <footer class="sticky-footer bg-white">
+                <div class="container my-auto">
+                    <div class="copyright text-center my-auto">
+                        <span>Copyright &copy; Xã Đoàn</span>
+                    </div>
+                </div>
+            </footer>-->
+            <!-- End of Footer -->
+
+        </div>
+        <!-- End of Content Wrapper -->
+
+    </div>
+    <!-- End of Page Wrapper -->
+    <!-- Scroll to Top Button-->
+    <a class="scroll-to-top rounded" href="#page-top">
+        <i class="fas fa-angle-up"></i>
+    </a>
+
+    <!-- Logout Modal-->
+    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Bạn có thật sự muốn thoát ?</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">Chọn "Đăng Xuất" nếu bạn muốn thoát ?</div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Hủy Bỏ</button>
+                    <a class="btn btn-primary" id="ButtonLogout" href="/Accounts/Logout">Đăng Xuất</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--THONG BAO-->
+    <div style="position: absolute; top: 4rem; right: 1rem;" aria-live="polite" aria-atomic="true">
+        <div position: relative;>
+            <div class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-delay="2000">
+                <div class="toast-header">
+                    <strong class="mr-auto">Thông Báo</strong>
+                    <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="toast-body"></div>
+            </div>
+        </div>
+    </div>
+
+    <!--Modal-->
+    <div class="modal fade" id="CustomModal" tabindex="-1" role="dialog" aria-labelledby="CustomModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="CustomModalLabel"></h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="CustomModalBody">
+                </div>
+                <div class="modal-footer" id="CustomModalFooter">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap core JavaScript-->
+    <script src="~/vendor/jquery/jquery.min.js"></script>
+    <script src="~/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Core plugin JavaScript-->
+    <script src="~/vendor/jquery-easing/jquery.easing.min.js"></script>
+
+    <!-- Custom scripts for all pages-->
+    <script src="~/Scripts/sb-admin-2.js"></script>
+
+    @RenderSection("Scripts", false)
+
+    <!-- Socket.io Login-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.1.0/socket.io.min.js"></script>
+    <script>
+            function ChangePass() {
+                document.querySelector("#CustomModalBody").innerHTML = `
+                    <div class="form-group">
+                        <b class="control-label">Mật Khẩu Cũ: </b>
+                        <div class="col-md-10">
+                            <input class="form-control" type="password" id="passOldAdmin" value="">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <b class="control-label">Mật Khẩu Mới: </b>
+                        <div class="col-md-10">
+                            <input class="form-control" type="password" id="passNewAdmin" value="">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <b class="control-label">Nhập Lại Mật Khẩu Mới: </b>
+                        <div class="col-md-10">
+                            <input class="form-control" type="password" id="passNew2Admin" value="">
+                        </div>
+                    </div>`
+                document.querySelector("#CustomModalLabel").innerHTML = "Đổi Mật Khẩu Quản Trị Viên"
+                document.querySelector("#CustomModalFooter").innerHTML = `<button class="btn btn-danger" type="button" data-dismiss="modal">Hủy Bỏ</button>
+                                                                      <button class="btn btn-success" data-dismiss="modal" onclick="AcceptChangePass()" href="#">Xác Nhận</button>`
+            }
+
+            function AcceptChangePass() {
+                var passOld = document.querySelector("#passOldAdmin").value
+                var passNew = document.querySelector("#passNewAdmin").value
+                var passNew2 = document.querySelector("#passNew2Admin").value
+                $.post("/Admin/ChangePassAdmin", { passOld: passOld, passNew: passNew, passNew2 : passNew2  }).done(function (data) {
+                    if (data == "OK") {
+                        document.querySelector('.toast-body').innerText = "🔔 Đổi Mật Khẩu Thành Công!!!"
+                        $('.toast').toast('show')
+                    } else {
+                        document.querySelector('.toast-body').innerText = "🔔 Vui Lòng Nhập Đúng Thông Tin!!!"
+                        $('.toast').toast('show')
+                    }
+                })
+            }
+
+            var socket = io.connect("https://real-time-ngao.herokuapp.com/")
+            socket.on("connect", function (data) {
+                socket.emit("Login","@Session["TaiKhoan"]","@Session.SessionID")
+            })
+            document.getElementById("ButtonLogout").addEventListener("click", function () {
+                socket.emit("Logout","@Session["TaiKhoan"]","@Session.SessionID")
+            })
+            socket.on("Logout", function(){
+                $.ajax({
+                    url: "/Accounts/Logout",
+                    data: {},
+                    type: 'GET',
+                    success: function (result) {
+                        window.location.href = '/Accounts/Login?thongbao=Tài Khoản Của Bạn Đã Được Đăng Nhập Ở Nơi Khác !!!';
+                    },
+                    error: function (result) {
+                    }
+                });
+            })
+            setInterval(() => {
+                var d = new Date();
+                document.querySelector("#time").innerHTML = (d.getHours() < 10 ? "0" + d.getHours() : d.getHours()) + ":" + (d.getMinutes() < 10 ? "0" + d.getMinutes() : d.getMinutes()) + "<sub style='font-size: 50%;'>" + (d.getSeconds() < 10 ? "0" + d.getSeconds() : d.getSeconds()) + "</sub>"
+            }, 500);
+
+        </script>
+</body>
+    </html>

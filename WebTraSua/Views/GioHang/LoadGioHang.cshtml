@@ -1,0 +1,96 @@
+﻿@model IEnumerable<WebTraSua.Models.GioHang>
+
+@{
+    if (Session["GioHang"] != null)
+    {
+        foreach (var item in Model)
+        {
+            <div class="cart-ss1-item">
+                <div class="cart-ss1-left">
+                    <div class="name">
+                        @item.TenSP @{if (item.Size != "")
+                        { <span>(@item.Size)</span> }}
+                    </div>
+                    <div class="customize">
+                        @if (item.Loai != "")
+                        {<span>Loại @item.Loai,</span>}
+                        @if (item.Size != "")
+                        {<span>Size @item.Size,</span>}
+                        @if (item.Duong != "")
+                        {<span>@item.Duong% Đường,</span>}
+                        @if (item.Da != "")
+                        {<span>@item.Da% Đá,</span>}
+                        @{
+                            var listName = item._GetNameTP();
+                            if (listName != null && listName.Count() > 0)
+                            {
+                                foreach (var item2 in listName)
+                                {
+                                    <span>@item2 ,</span>
+                                }
+                            }
+                        }
+                    </div>
+                    <div class="total">@String.Format("{0:0,0}", item.Gia)đ x @item.SL = @String.Format("{0:0,0}", item.Gia * item.SL)đ</div>
+                </div>
+                <div class="cart-ss1-right">
+                    <div class="change-quantity decrease" data-id="@item.STT">-</div>
+                    <div class="amount">@item.SL</div>
+                    <div class="change-quantity increase" data-id="@item.STT">+</div>
+                </div>
+            </div>
+        }
+    }
+}
+
+<script type="text/javascript">
+var time = setInterval(function () {
+    if (window.jQuery != undefined) {
+        window.clearInterval(time);
+        $(document).ready(function () {
+            document.querySelector(".cart-ss2-two").innerHTML = "@String.Format("{0:0,0}", (int)ViewBag.TongSoLuong)"
+            document.querySelector(".cart-ss2-four").innerHTML = "@String.Format("{0:0,0}", (int)ViewBag.TongTien)đ"
+            var itemGioHang = [...document.querySelectorAll(".cart-ss1-item")]
+            for (var i = 0; i < itemGioHang.length; i++) {
+                itemGioHang[i].querySelector(".increase").addEventListener("click", function (e) {
+                    var STT = $(e.target).attr("data-id")
+                    var employee = new Object()
+                    employee.STT = STT
+                    employee.reURL = window.location.href
+                    $.ajax({
+                        type: "POST",
+                        url: "/GioHang/TangSoLuong",
+                        data: JSON.stringify(employee),
+                        contentType: "application/json; charset=utf-8",
+                        dataType: "json",
+                        success: function (response) {
+                            location.reload()
+                        },
+                        error: function (response) {
+                            location.reload()
+                        }
+                    });
+                })
+                itemGioHang[i].querySelector(".decrease").addEventListener("click", function (e) {
+                    var STT = $(e.target).attr("data-id")
+                    var employee = new Object()
+                    employee.STT = STT
+                    employee.reURL = window.location.href
+                    $.ajax({
+                        type: "POST",
+                        url: "/GioHang/GiamSoLuong",
+                        data: JSON.stringify(employee),
+                        contentType: "application/json; charset=utf-8",
+                        dataType: "json",
+                        success: function (response) {
+                            location.reload()
+                        },
+                        error: function (response) {
+                            location.reload()
+                        }
+                    });
+                })
+            }
+        });
+    };
+}, 10);</script>

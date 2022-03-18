@@ -1,0 +1,44 @@
+﻿@{
+    ViewBag.Title = "Đăng Nhập Quản Trị Viên";
+    Layout = "~/Views/Shared/_Layout_Account.cshtml";
+}
+
+@section Scripts{
+    <script>
+        const queryString = window.location.search;
+        const urlParams = new URLSearchParams(queryString);
+        console.log(urlParams.get('thongbao'))
+        if (urlParams.get('thongbao') != null) {
+            document.querySelector('.toast-body').innerText = "🔔" + urlParams.get('thongbao')
+            $('.toast').toast('show')
+        }
+    </script>
+}
+
+<div class="row">
+    <div class="col-lg-6 d-none d-lg-block bg-login-image"></div>
+    <div class="col-lg-6">
+        <div class="p-5">
+            <div class="text-center">
+                <h1 class="h4 text-gray-900 mb-4">Đăng Nhập Quản Trị Viên</h1>
+            </div>
+            @using (Html.BeginForm("Login", "Admin", FormMethod.Post, htmlAttributes: new { @class = "user" }))
+            {
+                @Html.AntiForgeryToken()
+                @Html.ValidationSummary(true)
+                <div class="form-group">
+                    <input type="text" class="form-control form-control-user"
+                           name="TaiKhoan" aria-describedby="emailHelp"
+                           placeholder="Tài Khoản">
+                </div>
+                <div class="form-group">
+                    <input type="password" class="form-control form-control-user"
+                           name="MatKhau" placeholder="Mật Khẩu">
+                </div>
+                <input type="Submit" class="btn btn-primary btn-user btn-block" value="Đăng Nhập" />
+            }
+        </div>
+    </div>
+</div>
+
+

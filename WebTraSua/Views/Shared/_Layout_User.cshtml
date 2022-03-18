@@ -1,0 +1,222 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Trà Sữa 4 Anh Em</title>
+    <link rel="icon" type="image/png" href="~/images/logo_200x200.png" />
+    <!-- Import Boostrap css, js, font awesome here -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+    <link href="https://use.fontawesome.com/releases/v5.0.4/css/all.css" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js">
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js">
+    </script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+    <link href="~/Content/style.css" rel="stylesheet" />
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-md navbar-light bg-light sticky-top">
+        <div class="container-fluid">
+            <a class="navbar-branch" href="#">
+                <img src="~/images/logo_200x200_w.png" height="90">
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse"
+                    data-target="#navbarResponsive">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarResponsive">
+                <ul class="navbar-nav ml-auto">
+                    @if (Session["Email"] != null)
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link active" href="@Url.Action("UpdateInfo", "Accounts")">@Session["Name"]</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="@Url.Action("Logout", "Accounts")"><i class="fa fa-sign-out"></i></a>
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link active" href="@Url.Action("Login", "Accounts")">Đăng Nhập</a>
+                        </li>
+                    }
+                    <li class="nav-item giohang">
+                        <a class="nav-link" href="@Url.Action("Index", "GioHang")">Giỏ Hàng <i class="fas fa-shopping-bag"></i> <sup id="SLGio">@{
+                            var giohang = Session["GioHang"] as IEnumerable<WebTraSua.Models.GioHang>;
+                            if (giohang != null) { 
+                                <span>@giohang.Count()</span>
+                            }
+                            }</sup>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <!-- Carousel -->
+    <div id="slides" class="carousel slide" data-ride="carousel">
+        <ul class="carousel-indicators">
+            <li data-target="#slides" data-slide-to="0" class="active"></li>
+            <li data-target="#slides" data-slide-to="1"></li>
+            <li data-target="#slides" data-slide-to="2"></li>
+            <li data-target="#slides" data-slide-to="3"></li>
+        </ul>
+        <div class="carousel-inner">
+            <div class="carousel-item active">
+                <img src="~/images/bg1.jpg">
+                <div class="carousel-caption">
+                    <h1 class="display-2">4 ANH EM</h1>
+                    <h3>NGON NHƯ NHÀ LÀM</h3>
+                </div>
+            </div>
+            <div class="carousel-item">
+                <img src="~/images/bg2.jpg">
+                <div class="carousel-caption">
+                    <h1 class="display-2">4 ANH EM</h1>
+                    <h3>NGON NHƯ NHÀ LÀM</h3>
+                </div>
+            </div>
+            <div class="carousel-item">
+                <img src="~/images/bg3.jpg">
+                <div class="carousel-caption">
+                    <h1 class="display-2">4 ANH EM</h1>
+                    <h3>NGON NHƯ NHÀ LÀM</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br>
+    <hr class="my-2">
+    <br>
+    <div class="container-fluid padding">
+        <div class="row padding">
+            <div class="col-md-12 col-lg-6">
+                <h2>THƯƠNG HIỆU 4 ANH EM ĐÃ CÓ MẶT TẠI VIỆT NAM</h2>
+                <p>
+                    Hoạt động với phương châm “Chất lượng khởi nguồn từ
+                    đam mê”, cùng nhau, chúng tôi đã viết nên
+                    câu chuyện của một thương hiệu Việt chất lượng,
+                    4 anh em chính thức mở rộng vào ngành đồ ăn & thức
+                    uống (Food & Beverage) với chuỗi cửa hàng hoạt
+                    động theo mô hình tự phục vụ trong không gian hiện
+                    đại.
+                </p>
+                <p>
+                    Cùng với đội ngũ cộng sự đắc lực của mình, chúng
+                    tôi làm nên sự kiện đánh dấu bước chuyển mình trong
+                    lịch sự phát triển của 4 anh em.
+                </p>
+                <br>
+            </div>
+            <div class="col-lg-6 imggt">
+                <img src="~/images/logo_500x500.png" class="img-fluid">
+            </div>
+        </div>
+    </div>
+
+    <br>
+    <hr class="my-2">
+    <br>
+
+    <a href="@Url.Action("Index", "Order")" class="btn-delivery">
+        <img src="https://tocotocotea.com/wp-content/themes/tocotocotea/assets/images/button_delivery.webp" alt="">
+    </a>
+
+    <div class="container-fluid padding">
+        <div class="row padding">
+            @RenderBody()
+            <!--<div class="col-md-4">
+                <div class="card">
+                    <img class="card-img-top" src="~/images/espressoraspberryalmond.png">
+                    <div class="card-body">
+                        <h4 class="card-title">Trà Sữa Trân Châu Đường Đen</h4>
+                        <p class="card-text">100.000 VNĐ</p>
+                        <a href="#" class="btn btn-primary">Đặt Hàng</a>
+                    </div>
+                </div>
+            </div>-->
+        </div>
+        <div style="text-align: center;">
+            <a href="@Url.Action("Index", "Order")" class="btn btn-primary xemthem fun">Xem Thêm</a>
+        </div>
+    </div>
+
+    <br>
+    <hr class="my-2">
+    <br>
+
+    <div class="container-fluid padding">
+        <div class="row text-center padding">
+            <div class="col-12">
+                <h2>Liên Hệ Với Chúng Tôi</h2>
+            </div>
+            <div class="col-12 social padding">
+                <a href="https://www.facebook.com/groups/18DTHA2"><i class="fab fa-facebook"></i></a>
+                <a href="https://www.facebook.com/groups/18DTHA2"><i class="fab fa-instagram"></i></a>
+                <a href="https://www.facebook.com/groups/18DTHA2"><i class="fab fa-youtube"></i></a>
+            </div>
+        </div>
+    </div>
+
+    <hr class="my-2">
+    <br>
+    <footer>
+        <div class="container-fluid padding">
+            <div class="row text-center">
+                <div class="col-md-4 col-footer">
+                    <hr class="light">
+                    <h5>Địa Chỉ Cửa Hàng</h5>
+                    <hr class="light">
+                    <p>
+                        Trụ sở chính: Trường Đại Học Công Nghệ TP.HCM - ĐKKD: 0302 108 546<br>
+                        Nhà máy: Khu Công Nghiệp Sóng Thần<br>
+                        Địa chỉ: 24/1 Đường Số 17, Khu Phố 5, Phường Linh Trung, TP.Thủ Đức<br>
+                    </p>
+                </div>
+                <div class="col-md-4 col-footer">
+                    <hr class="light">
+                    <h5>Thông Tin Liên Hệ</h5>
+                    <hr class="light">
+                    <p>
+                        Điện thoại: 090 0000 1234<br>
+                        Fax: (012) 4567 8901<br>
+                        Email: 4anhem_official@gmail.com<br>
+                        Info@4anhem.com.vn<br>
+                    </p>
+                </div>
+                <div class="col-md-4 col-footer">
+                    <hr class="light">
+                    <h5>Chăm Ngôn Cửa Hàng</h5>
+                    <hr class="light">
+                    <p>Khách hàng là thượng đế</p>
+                    <p>Khách hàng luôn đúng</p>
+                    <p>Vừa lòng khách đến, hài lòng khách đi</p>
+                </div>
+                <div class="col-md-4 col-footer">
+                    <img src="~/images/dathongbao.png" style="padding-top: 3rem;" alt="Alternate Text" width="200px" />
+                </div>
+                <div class="col-12">
+                    <hr class="light-100">
+                    <h5>&copy; Copyright By Xã Đoàn</h5>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+

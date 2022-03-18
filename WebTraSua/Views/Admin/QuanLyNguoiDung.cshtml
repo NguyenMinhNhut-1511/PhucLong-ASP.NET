@@ -1,0 +1,81 @@
+﻿@model IEnumerable<WebTraSua.Models.NguoiDung>
+
+@{
+    ViewBag.Title = "QuanLyNguoiDung";
+    Layout = "~/Views/Shared/_Layout_Admin.cshtml";
+}
+
+<!-- DataTales Example -->
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary d-inline-block">Danh Sách Người Dùng</h6>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered" id="dataTable" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Họ Tên</th>
+                        <th>Email</th>
+                        <th>Số Điện Thoại</th>
+                        <th>Địa Chỉ</th>
+                        <th>Ngày Sinh</th>
+                        <th>Giới Tính</th>
+                        <th>Tình trạng</th>
+                        <th>Hoạt Động</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                    <tr>
+                        <td>@item.ID</td>
+                        <td>@item.HoTen</td>
+                        <td>@item.Email</td>
+                        <td>@item.SDT</td>
+                        <td>@item.DiaChi</td>
+                        <td>@item.NgaySinh</td>
+                        <td>@item.GioiTinh</td>
+                        <td>@item.TinhTrang.tenTinhTrang</td>
+                        <td>
+                            @if (item.maTinhTrang == "block")
+                            {
+                                <button onclick="SetTinhTrang('@item.ID','active')" class="btn btn-success">Mở Khóa</button>
+                            }
+                            else
+                            {
+                                <button onclick="SetTinhTrang('@item.ID','block')" class="btn btn-danger">Khóa</button>
+                            }
+
+                        </td>
+                    </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <!-- Custom styles for this page -->
+    <link href="~/vendor/datatables/dataTables.bootstrap4.css" rel="stylesheet" />
+
+    <!-- Page level plugins -->
+    <script src="~/vendor/datatables/jquery.dataTables.js"></script>
+    <script src="~/vendor/datatables/dataTables.bootstrap4.js"></script>
+
+    <!-- Page level custom scripts -->
+    <script src="~/Scripts/demo/datatables-demo.js"></script>
+    <script>
+        function SetTinhTrang(id ,tt) {
+            $.post("/Admin/SetTinhTrang", {id: id, tt: tt }).done(function (data) {
+                if (data == "OK") {
+                    location.reload()
+                } else {
+                    alert("Có Lỗi")
+                }
+            })
+        }
+    </script>
+}

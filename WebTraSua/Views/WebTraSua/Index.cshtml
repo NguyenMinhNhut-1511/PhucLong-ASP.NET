@@ -1,0 +1,30 @@
+﻿@model IEnumerable<WebTraSua.Models.SanPham>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout_User.cshtml";
+}
+
+@foreach (var item in Model)
+{
+    <div class="col-md-4">
+        <div class="card">
+            <img class="card-img-top" src="@item.Anh">
+            <div class="card-body">
+                <h4 class="card-title">@item.tenSP</h4>
+                @{
+                    if (item.GiamGia == 0)
+                    {
+                        <p class="card-text">@String.Format("{0:0,0}", (int)item.Gia) VNĐ</p>
+                    }
+                    else
+                    {
+                        <span class="card-text">@String.Format("{0:0,0}", (int)((int)item.Gia) * (100 - item.GiamGia) / 100) VNĐ</span>
+                        <span class="card-text"><del style="font-size: 0.7rem;">@String.Format("{0:0,0}", (int)item.Gia) VNĐ</del></span>
+                    }
+                }
+                <!--<a href="#" class="btn btn-primary">Đặt Hàng</a>-->
+            </div>
+        </div>
+    </div>
+}
